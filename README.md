@@ -14,3 +14,14 @@ Skill & Experience Match – Compares resume content with job descriptions for b
 Instant Feedback – Provides concise, exam-ready style recommendations for quick edits.
 
 This project showcases your technical skills in web development, problem-solving, and career-focused innovation. It reflects your commitment to building practical tools that empower users to secure internships and job opportunities in top tech companies.
+
+
+# Resume Analyzer 📄🔍
+
+A rule-based resume inspection tool built with HTML, CSS, and JavaScript. 
+
+## ✨ Features
+* **Format Check:** Scans for standard sections like Education, Experience, and Skills.
+* **Phrase Analysis:** Flags weak action verbs and overused cliches.
+* **Keyword Matching:** Paste a target job description to check your keyword overlap percentage.
+* **Dark Mode:** Built-in toggle for comfortable viewing.
