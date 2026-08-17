@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Resume Intel — Inspection Report</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+
+<style>
+:root{
+  --paper:#faf9f5;
+  --paper-raised:#ffffff;
+  --ink:#191c22;
+  --ink-soft:#565c69;
+  --line:#dcdbd2;
+  --blue:#2b4c8c;
+  --blue-soft:#e8edf6;
+  --amber:#a9691f;
+  --amber-soft:#faf0e2;
+  --good:#2f7a4f;
+  --good-soft:#e6f3ea;
+  --bad:#b23b3b;
+  --bad-soft:#fbeaea;
+  --mono:'IBM Plex Mono', monospace;
+  --disp:'Space Grotesk', sans-serif;
+  --body:'Inter', sans-serif;
+  --radius:14px;
+  --shadow:0 1px 2px rgba(25,28,34,.04), 0 8px 24px rgba(25,28,34,.06);
+}
+
+.dark{
+  --paper:#14161b;
+  --paper-raised:#1c1f26;
+  --ink:#eceef2;
+  --ink-soft:#9aa1ae;
+  --line:#2c313c;
+  --blue:#7fa1e0;
+  --blue-soft:#1f2a3d;
+  --amber:#e0a862;
+  --amber-soft:#332616;
+  --good:#6ec996;
+  --good-soft:#173124;
+  --bad:#e58787;
+  --bad-soft:#3a1e1e;
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+}
+
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+
+body{
+  margin:0;
+  font-family:var(--body);
+  background:var(--paper);
+  color:var(--ink);
+  min-height:100vh;
+  transition:background .25s ease, color .25s ease;
+  background-image:
+    linear-gradient(var(--line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size:36px 36px;
+  background-attachment:fixed;
+  background-position:center;
+}
+.dark body{opacity:1;}
+body{}
+body::before{ }
+
+@media (prefers-reduced-motion: reduce){
+  *{animation-duration:.001ms !important; transition-duration:.001ms !important;}
+}
+
+.shell{
+  max-width:1180px;
+  margin:0 auto;
+  padding:28px 22px 80px;
+}
+
+/* ---------- Header ---------- */
+.topbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:34px;
+  gap:16px;
+}
+.brand{
+  display:flex;
+  align-items:baseline;
+  gap:10px;
+}
+.brand .mark{
+  font-family:var(--mono);
+  font-size:12px;
+  color:var(--blue);
+  border:1px solid var(--blue);
+  border-radius:5px;
+  padding:2px 6px;
+  letter-spacing:.06em;
+}
+.brand h1{
+  font-family:var(--disp);
+  font-size:22px;
+  font-weight:700;
+  margin:0;
+  letter-spacing:-.01em;
+}
+.brand p{
+  font-family:var(--mono);
+  font-size:12px;
+  color:var(--ink-soft);
+  margin:4px 0 0;
+}
+.mode-toggle{
+  font-family:var(--mono);
+  font-size:12px;
+  background:var(--paper-raised);
+  border:1px solid var(--line);
+  color:var(--ink);
+  border-radius:8px;
+  padding:8px 12px;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  gap:6px;
+  box-shadow:var(--shadow);
+}
+.mode-toggle:hover{border-color:var(--blue);}
+
+/* ---------- Layout ---------- */
+.grid{
+  display:grid;
+  grid-template-columns:340px 1fr;
+  gap:22px;
+  align-items:start;
+}
+@media (max-width:860px){
+  .grid{grid-template-columns:1fr;}
+}
+
+.card{
+  background:var(--paper-raised);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+}
+
+/* ---------- Upload panel ---------- */
+.panel-pad{padding:22px;}
+.panel-title{
+  font-family:var(--mono);
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:.1em;
+  color:var(--ink-soft);
+  margin:0 0 14px;
+}
+
+.dropzone{
+  border:1.5px dashed var(--line);
+  border-radius:10px;
+  padding:28px 16px;
+  text-align:center;
+  cursor:pointer;
+  transition:.2s;
+  background:var(--paper);
+}
+.dropzone.drag{
+  border-color:var(--blue);
+  background:var(--blue-soft);
+}
+.dropzone .icon{
+  width:38px;height:38px;margin:0 auto 12px;
+  color:var(--ink-soft);
+}
+.dropzone .icon svg{width:100%;height:100%;}
+.dropzone .main-txt{font-weight:600;font-size:14px;margin:0 0 4px;}
+.dropzone .sub-txt{font-size:12px;color:var(--ink-soft);margin:0;}
+.dropzone b{color:var(--blue);}
+
+.file-chip{
+  display:none;
+  align-items:center;
+  gap:10px;
+  margin-top:14px;
+  padding:10px 12px;
+  border-radius:8px;
+  background:var(--paper);
+  border:1px solid var(--line);
+  font-size:13px;
+}
+.file-chip .fname{
+  flex:1;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  font-weight:600;
+}
+.file-chip .fsize{
+  font-family:var(--mono);
+  font-size:11px;
+  color:var(--ink-soft);
+}
+.file-chip button{
+  border:none;background:none;color:var(--bad);cursor:pointer;font-size:15px;line-height:1;
+}
+
+.jd-box{margin-top:18px;}
+.jd-box textarea{
+  width:100%;
+  min-height:90px;
+  resize:vertical;
+  border:1px solid var(--line);
+  border-radius:8px;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--body);
+  font-size:13px;
+  padding:10px 12px;
+}
+.jd-box textarea:focus{outline:2px solid var(--blue);outline-offset:1px;}
+.jd-hint{font-size:11px;color:var(--ink-soft);margin:6px 0 0;}
+
+.btn-primary{
+  width:100%;
+  margin-top:18px;
+  background:var(--ink);
+  color:var(--paper);
+  border:none;
+  border-radius:9px;
+  padding:14px;
+  font-family:var(--disp);
+  font-weight:600;
+  font-size:14px;
+  cursor:pointer;
+  transition:.15s;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.dark .btn-primary{background:var(--blue);color:#0e1116;}
+.btn-primary:hover:not(:disabled){transform:translateY(-1px);}
+.btn-primary:disabled{opacity:.45;cursor:not-allowed;}
+.btn-primary .spin{
+  width:14px;height:14px;border-radius:50%;
+  border:2px solid rgba(255,255,255,.35);
+  border-top-color:#fff;
+  animation:spin .7s linear infinite;
+  display:none;
+}
+.btn-primary.loading .spin{display:inline-block;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* ---------- Scan log (signature element) ---------- */
+.scanlog{
+  margin-top:18px;
+  border-top:1px solid var(--line);
+  padding-top:14px;
+  display:none;
+}
+.scanlog.active{display:block;}
+.scanlog-line{
+  font-family:var(--mono);
+  font-size:11.5px;
+  color:var(--ink-soft);
+  display:flex;
+  gap:8px;
+  padding:3px 0;
+  opacity:0;
+  transform:translateY(2px);
+  animation:appear .25s forwards;
+}
+.scanlog-line .tag{color:var(--good);flex-shrink:0;}
+.scanlog-line.warn .tag{color:var(--amber);}
+@keyframes appear{to{opacity:1;transform:translateY(0);}}
+
+/* ---------- Report side ---------- */
+.report{
+  display:none;
+}
+.report.active{display:block;}
+
+.empty-state{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:80px 30px;
+  color:var(--ink-soft);
+}
+.empty-state .icon{width:46px;height:46px;margin-bottom:14px;opacity:.5;}
+.empty-state .icon svg{width:100%;height:100%;}
+.empty-state h3{font-family:var(--disp);font-size:16px;color:var(--ink);margin:0 0 6px;}
+.empty-state p{font-size:13px;max-width:340px;margin:0;}
+
+.score-row{
+  display:grid;
+  grid-template-columns:auto 1fr;
+  gap:26px;
+  padding:26px;
+  border-bottom:1px solid var(--line);
+  align-items:center;
+}
+@media (max-width:600px){.score-row{grid-template-columns:1fr;text-align:center;}}
+
+.gauge{
+  font-family:var(--mono);
+  font-size:46px;
+  font-weight:600;
+  line-height:1;
+  white-space:nowrap;
+}
+.gauge span{font-size:16px;color:var(--ink-soft);}
+.gauge-label{font-family:var(--mono);font-size:11px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.08em;margin-top:6px;}
+
+.meter{
+  display:flex;
+  gap:3px;
+  height:26px;
+  margin-top:10px;
+}
+.meter i{
+  flex:1;
+  border-radius:2px;
+  background:var(--line);
+}
+.meter i.fill{background:var(--blue);}
+.meter i.fill.bad{background:var(--bad);}
+.meter i.fill.mid{background:var(--amber);}
+.meter i.fill.good{background:var(--good);}
+
+.stat-strip{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  border-bottom:1px solid var(--line);
+}
+.stat-strip div{
+  padding:16px 18px;
+  border-right:1px solid var(--line);
+}
+.stat-strip div:last-child{border-right:none;}
+.stat-strip .num{font-family:var(--mono);font-size:20px;font-weight:600;}
+.stat-strip .lbl{font-size:11px;color:var(--ink-soft);margin-top:2px;}
+@media (max-width:600px){.stat-strip{grid-template-columns:repeat(2,1fr);}}
+
+.section{padding:22px 26px;border-bottom:1px solid var(--line);}
+.section:last-child{border-bottom:none;}
+.section h2{
+  font-family:var(--disp);
+  font-size:15px;
+  margin:0 0 14px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.count-badge{
+  font-family:var(--mono);
+  font-size:11px;
+  border-radius:20px;
+  padding:2px 9px;
+  background:var(--paper);
+  border:1px solid var(--line);
+  color:var(--ink-soft);
+}
+
+.finding{
+  display:grid;
+  grid-template-columns:auto 1fr;
+  gap:12px;
+  padding:12px 14px;
+  border-radius:9px;
+  margin-bottom:8px;
+  font-size:13px;
+  line-height:1.55;
+}
+.finding:last-child{margin-bottom:0;}
+.finding .badge{
+  font-family:var(--mono);
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:.05em;
+  padding:3px 7px;
+  border-radius:5px;
+  height:fit-content;
+  white-space:nowrap;
+}
+.finding.critical{background:var(--bad-soft);}
+.finding.critical .badge{background:var(--bad);color:#fff;}
+.finding.suggestion{background:var(--amber-soft);}
+.finding.suggestion .badge{background:var(--amber);color:#fff;}
+.finding.strength{background:var(--good-soft);}
+.finding.strength .badge{background:var(--good);color:#fff;}
+.finding .txt b{display:block;margin-bottom:2px;}
+.finding .snippet{
+  font-family:var(--mono);
+  font-size:11.5px;
+  color:var(--ink-soft);
+  margin-top:4px;
+  display:block;
+}
+
+.chip-row{display:flex;flex-wrap:wrap;gap:8px;}
+.chip{
+  font-family:var(--mono);
+  font-size:12px;
+  padding:5px 10px;
+  border-radius:6px;
+  border:1px solid var(--line);
+}
+.chip.hit{background:var(--good-soft);color:var(--good);border-color:transparent;}
+.chip.miss{background:var(--bad-soft);color:var(--bad);border-color:transparent;}
+
+.jd-summary{
+  font-size:13px;
+  color:var(--ink-soft);
+  margin-bottom:12px;
+}
+.jd-summary b{color:var(--ink);}
+
+.actions-row{
+  display:flex;
+  gap:10px;
+  padding:20px 26px;
+  flex-wrap:wrap;
+}
+.btn-ghost{
+  font-family:var(--mono);
+  font-size:12px;
+  background:var(--paper);
+  border:1px solid var(--line);
+  color:var(--ink);
+  border-radius:8px;
+  padding:10px 14px;
+  cursor:pointer;
+  display:flex;align-items:center;gap:6px;
+}
+.btn-ghost:hover{border-color:var(--blue);color:var(--blue);}
+
+.disclaimer{
+  font-size:11.5px;
+  color:var(--ink-soft);
+  padding:14px 26px 22px;
+  border-top:1px dashed var(--line);
+}
+</style>
+</head>
+
+<body>
+<div class="shell">
+
+  <div class="topbar">
+    <div class="brand">
+      <span class="mark">RIA-01</span>
+      <div>
+        <h1>Resume Intel</h1>
+        <p>Rule-based inspection · not an ATS simulator</p>
+      </div>
+    </div>
+    <button class="mode-toggle" id="modeToggle">🌙 Dark</button>
+  </div>
+
+  <div class="grid">
+
+    <!-- LEFT: Upload + controls -->
+    <div class="card panel-pad">
+      <p class="panel-title">01 · Submit document</p>
+
+      <div class="dropzone" id="dropZone">
+        <div class="icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+            <path d="M12 3v12m0 0-4-4m4 4 4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/>
+          </svg>
+        </div>
+        <p class="main-txt">Drop resume here or <b>browse</b></p>
+        <p class="sub-txt">PDF or DOCX · single file</p>
+        <input type="file" id="fileInput" accept=".pdf,.docx" hidden>
+      </div>
+
+      <div class="file-chip" id="fileChip">
+        <span class="fname" id="fnameTxt"></span>
+        <span class="fsize" id="fsizeTxt"></span>
+        <button id="clearFile" title="Remove">✕</button>
+      </div>
+
+      <div class="jd-box">
+        <p class="panel-title" style="margin-bottom:8px;">02 · Target role (optional)</p>
+        <textarea id="jdInput" placeholder="Paste a job description here to check keyword overlap with your resume…"></textarea>
+        <p class="jd-hint">Leave blank to skip keyword matching.</p>
+      </div>
+
+      <button class="btn-primary" id="analyzeBtn" disabled>
+        <span class="spin"></span>
+        <span id="analyzeLabel">Run inspection</span>
+      </button>
+
+      <div class="scanlog" id="scanLog"></div>
+    </div>
+
+    <!-- RIGHT: Report -->
+    <div class="card">
+      <div class="empty-state" id="emptyState">
+        <div class="icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+            <rect x="4" y="3" width="16" height="18" rx="2"/>
+            <path d="M8 8h8M8 12h8M8 16h5"/>
+          </svg>
+        </div>
+        <h3>No report yet</h3>
+        <p>Upload a PDF or DOCX resume on the left and run the inspection. Every finding below is generated from the actual text extracted from your file — nothing is pre-filled.</p>
+      </div>
+
+      <div class="report" id="report">
+
+        <div class="score-row">
+          <div>
+            <div class="gauge"><span id="scoreVal">0</span><span>/100</span></div>
+            <div class="gauge-label" id="scoreLabel">—</div>
+          </div>
+          <div style="width:100%;">
+            <div class="meter" id="meter"></div>
+          </div>
+        </div>
+
+        <div class="stat-strip" id="statStrip"></div>
+
+        <div class="section" id="criticalSection">
+          <h2>🛑 Critical issues <span class="count-badge" id="criticalCount">0</span></h2>
+          <div id="criticalList"></div>
+        </div>
+
+        <div class="section" id="suggestionSection">
+          <h2>✏️ Suggestions <span class="count-badge" id="suggestionCount">0</span></h2>
+          <div id="suggestionList"></div>
+        </div>
+
+        <div class="section" id="strengthSection">
+          <h2>✅ Strengths <span class="count-badge" id="strengthCount">0</span></h2>
+          <div id="strengthList"></div>
+        </div>
+
+        <div class="section" id="jdSection" style="display:none;">
+          <h2>🎯 Keyword match vs. job description</h2>
+          <p class="jd-summary" id="jdSummary"></p>
+          <div class="chip-row" id="jdChips"></div>
+        </div>
+
+        <div class="actions-row">
+          <button class="btn-ghost" id="downloadBtn">⬇ Download report (.txt)</button>
+          <button class="btn-ghost" id="resetBtn">↺ Analyze another file</button>
+        </div>
+
+        <p class="disclaimer">Findings are produced by pattern-matching against your resume's extracted text (regex + keyword heuristics), not by a trained ATS or hiring-model. Use this as a first pass, not a final verdict.</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+/* ================= THEME ================= */
+const modeToggle = document.getElementById('modeToggle');
+modeToggle.addEventListener('click', () => {
+  document.body.classList.toggle('dark');
+  const isDark = document.body.classList.contains('dark');
+  modeToggle.textContent = isDark ? '☀️ Light' : '🌙 Dark';
+});
+
+/* ================= FILE HANDLING ================= */
+const dropZone   = document.getElementById('dropZone');
+const fileInput  = document.getElementById('fileInput');
+const fileChip   = document.getElementById('fileChip');
+const fnameTxt   = document.getElementById('fnameTxt');
+const fsizeTxt   = document.getElementById('fsizeTxt');
+const clearFile  = document.getElementById('clearFile');
+const analyzeBtn = document.getElementById('analyzeBtn');
+const analyzeLabel = document.getElementById('analyzeLabel');
+
+let currentFile = null;
+
+if (window.pdfjsLib) {
+  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+}
+
+dropZone.addEventListener('click', () => fileInput.click());
+['dragenter','dragover'].forEach(evt =>
+  dropZone.addEventListener(evt, e => { e.preventDefault(); dropZone.classList.add('drag'); })
+);
+['dragleave','drop'].forEach(evt =>
+  dropZone.addEventListener(evt, e => { e.preventDefault(); dropZone.classList.remove('drag'); })
+);
+dropZone.addEventListener('drop', e => {
+  const f = e.dataTransfer.files[0];
+  if (f) handleFile(f);
+});
+fileInput.addEventListener('change', () => {
+  if (fileInput.files[0]) handleFile(fileInput.files[0]);
+});
+clearFile.addEventListener('click', (e) => {
+  e.stopPropagation();
+  resetFile();
+});
+
+function handleFile(file){
+  const okType = /\.(pdf|docx)$/i.test(file.name);
+  if (!okType){
+    alert('Please upload a .pdf or .docx file.');
+    return;
+  }
+  currentFile = file;
+  fnameTxt.textContent = file.name;
+  fsizeTxt.textContent = (file.size/1024).toFixed(0) + ' KB';
+  fileChip.style.display = 'flex';
+  analyzeBtn.disabled = false;
+  resetReport();
+}
+
+function resetFile(){
+  currentFile = null;
+  fileInput.value = '';
+  fileChip.style.display = 'none';
+  analyzeBtn.disabled = true;
+  resetReport();
+}
+
+/* ================= TEXT EXTRACTION ================= */
+async function extractText(file){
+  if (/\.pdf$/i.test(file.name)){
+    const buf = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({data:buf}).promise;
+    let text = '';
+    for (let i=1;i<=pdf.numPages;i++){
+      const page = await pdf.getPage(i);
+      const content = await page.getTextContent();
+      let lastY = null, line = '';
+      content.items.forEach(item => {
+        if (lastY !== null && Math.abs(item.transform[5]-lastY) > 4){
+          text += line + '\n';
+          line = '';
+        }
+        line += item.str + ' ';
+        lastY = item.transform[5];
+      });
+      text += line + '\n';
+    }
+    return text;
+  } else {
+    const buf = await file.arrayBuffer();
+    const result = await mammoth.extractRawText({arrayBuffer: buf});
+    return result.value;
+  }
+}
+
+/* ================= ANALYSIS ENGINE ================= */
+const WEAK_PHRASES = [
+  'responsible for','duties included','worked on','helped with','tasked with',
+  'in charge of','participated in','assisted with','was involved in','handled'
+];
+const CLICHES = [
+  'hardworking','team player','detail-oriented','detail oriented','go-getter',
+  'go getter','self-starter','self starter','think outside the box','synergy',
+  'results-driven','fast learner'
+];
+const ACTION_VERBS = [
+  'led','built','designed','implemented','managed','optimized','achieved','launched',
+  'developed','automated','reduced','increased','delivered','created','architected',
+  'engineered','streamlined','spearheaded','negotiated','mentored','analyzed',
+  'improved','deployed','scaled','coordinated','directed','executed','established',
+  'resolved','migrated','integrated','initiated'
+];
+const SECTION_KEYWORDS = {
+  'Experience': /\b(experience|employment history|work history)\b/i,
+  'Education': /\beducation\b/i,
+  'Skills': /\b(skills|technical skills)\b/i,
+  'Projects': /\bprojects?\b/i,
+  'Summary/Objective': /\b(summary|objective|profile)\b/i
+};
+const STOPWORDS = new Set(('a an the and or for of to in on with at by from as is are was were be '+
+  'this that it your you we our their they will can should must have has had not '+
+  'into about over under between within across per etc using use used').split(' '));
+
+function analyze(text, jdText){
+  const clean = text.replace(/\r/g,'');
+  const lower = clean.toLowerCase();
+  const words = clean.trim().split(/\s+/).filter(Boolean);
+  const wordCount = words.length;
+  const lines = clean.split('\n').map(l=>l.trim()).filter(Boolean);
+
+  const findings = { critical: [], suggestion: [], strength: [] };
+  let score = 100;
+
+  // --- Contact info ---
+  const emailMatch = clean.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
+  const phoneMatch = clean.match(/(\+?\d{1,3}[-.\s]?)?\(?\d{3,4}\)?[-.\s]?\d{3,4}[-.\s]?\d{3,4}/);
+  if (emailMatch){
+    findings.strength.push({title:'Email found', detail:'A valid email address is present.', snippet: emailMatch[0]});
+  } else {
+    findings.critical.push({title:'No email detected', detail:'Recruiters and ATS parsers look for an email at the top of the resume.'});
+    score -= 12;
+  }
+  if (phoneMatch){
+    findings.strength.push({title:'Phone number found', detail:'A contact number is present.', snippet: phoneMatch[0]});
+  } else {
+    findings.suggestion.push({title:'No phone number detected', detail:'Consider adding a phone number for recruiters who prefer calling.'});
+    score -= 6;
+  }
+  const linkedin = clean.match(/linkedin\.com\/[a-zA-Z0-9\-\/]+/i);
+  const github = clean.match(/github\.com\/[a-zA-Z0-9\-\/]+/i);
+  if (linkedin) findings.strength.push({title:'LinkedIn profile linked', detail:'Good — recruiters can verify your profile.', snippet: linkedin[0]});
+  else { findings.suggestion.push({title:'No LinkedIn link found', detail:'Adding a LinkedIn URL builds credibility, especially for Data Science / Dev roles.'}); score -= 4; }
+  if (github) findings.strength.push({title:'GitHub linked', detail:'Great for technical roles — shows real code.', snippet: github[0]});
+
+  // --- Sections ---
+  const foundSections = [];
+  const missingSections = [];
+  Object.entries(SECTION_KEYWORDS).forEach(([name, re]) => {
+    if (re.test(clean)) foundSections.push(name); else missingSections.push(name);
+  });
+  if (missingSections.includes('Experience') || missingSections.includes('Education')){
+    findings.critical.push({title:'Core section missing', detail:'Could not detect: ' + missingSections.filter(s=>['Experience','Education'].includes(s)).join(', ') + '. Make sure section headers are clear, plain text (not inside images/tables).'});
+    score -= 15;
+  }
+  if (!missingSections.includes('Skills')) findings.strength.push({title:'Skills section detected', detail:'Helps ATS keyword-match you to job requirements.'});
+  else { findings.suggestion.push({title:'No dedicated Skills section', detail:'A clearly labeled Skills section improves ATS keyword parsing.'}); score -= 6; }
+  if (missingSections.includes('Projects')){
+    findings.suggestion.push({title:'No Projects section found', detail:'For students/early-career profiles, a Projects section is often more convincing than sparse work experience.'});
+  }
+
+  // --- Word count / length ---
+  let lengthNote;
+  if (wordCount < 250){ lengthNote = 'Resume looks short ('+wordCount+' words) — may be under-detailed.'; findings.suggestion.push({title:'Resume may be too brief', detail: lengthNote}); score -= 8; }
+  else if (wordCount > 1100){ lengthNote = 'Resume looks long ('+wordCount+' words) — consider trimming to fit 1–2 pages.'; findings.suggestion.push({title:'Resume may be too long', detail: lengthNote}); score -= 6; }
+  else { findings.strength.push({title:'Healthy length', detail: wordCount+' words — a reasonable range for 1–2 pages.'}); }
+
+  // --- Weak phrases ---
+  let weakHits = [];
+  WEAK_PHRASES.forEach(p => {
+    const idx = lower.indexOf(p);
+    if (idx !== -1){
+      weakHits.push(p);
+      const snippet = clean.substr(Math.max(0, idx-15), p.length + 40).replace(/\s+/g,' ').trim();
+      findings.critical.push({title:'Weak phrasing: "'+p+'"', detail:'Passive, low-impact phrasing. Replace with a strong action verb + result.', snippet});
+    }
+  });
+  score -= Math.min(weakHits.length * 4, 20);
+
+  // --- Cliches ---
+  let clicheHits = [];
+  CLICHES.forEach(c => { if (lower.includes(c)) clicheHits.push(c); });
+  if (clicheHits.length){
+    findings.suggestion.push({title:'Overused buzzwords detected', detail:'Found: ' + clicheHits.join(', ') + '. Replace with specific, evidenced examples instead.'});
+    score -= Math.min(clicheHits.length * 2, 8);
+  }
+
+  // --- Action verbs ---
+  const foundVerbs = new Set();
+  ACTION_VERBS.forEach(v => { if (new RegExp('\\b'+v+'\\b','i').test(clean)) foundVerbs.add(v); });
+  if (foundVerbs.size >= 6){
+    findings.strength.push({title:'Strong action-verb usage', detail: foundVerbs.size + ' distinct strong verbs found (e.g. ' + [...foundVerbs].slice(0,5).join(', ') + ').'});
+  } else if (foundVerbs.size >= 2){
+    findings.suggestion.push({title:'Limited action-verb variety', detail:'Only ' + foundVerbs.size + ' strong verbs detected. Aim to start most bullets with a distinct action verb.'});
+    score -= 6;
+  } else {
+    findings.critical.push({title:'Very few action verbs', detail:'Bullets should start with strong verbs like Led, Built, Optimized, Reduced, Automated.'});
+    score -= 12;
+  }
+
+  // --- Quantified impact ---
+  const bulletLines = lines.filter(l => /^[•\-\*▪●]/.test(l) || (l.length < 200 && l.length > 25));
+  const quantified = bulletLines.filter(l => /\d/.test(l));
+  const qRatio = bulletLines.length ? quantified.length / bulletLines.length : 0;
+  if (bulletLines.length >= 3){
+    if (qRatio >= 0.4){
+      findings.strength.push({title:'Bullets include measurable impact', detail: Math.round(qRatio*100)+'% of detected bullet-like lines contain numbers, %, or metrics.'});
+    } else {
+      findings.suggestion.push({title:'Few quantified results', detail: 'Only ' + Math.round(qRatio*100) + '% of bullets contain numbers. Add metrics — team size, % improvement, time saved, users impacted.'});
+      score -= 10;
+    }
+  }
+
+  // --- Date format consistency ---
+  const dateFormats = {
+    'MMM YYYY (e.g. Jan 2024)': /\b(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?\s+\d{4}\b/gi,
+    'MM/YYYY': /\b\d{1,2}\/\d{4}\b/g,
+    'MM/DD/YYYY': /\b\d{1,2}\/\d{1,2}\/\d{2,4}\b/g,
+    'YYYY-YYYY': /\b\d{4}\s*-\s*\d{4}\b/g
+  };
+  const usedFormats = Object.entries(dateFormats).filter(([,re]) => re.test(clean)).map(([name])=>name);
+  if (usedFormats.length > 1){
+    findings.suggestion.push({title:'Inconsistent date formats', detail:'Detected multiple styles: ' + usedFormats.join(' · ') + '. Pick one format throughout.'});
+    score -= 6;
+  } else if (usedFormats.length === 1){
+    findings.strength.push({title:'Consistent date formatting', detail:'Dates appear to follow a single format: ' + usedFormats[0] + '.'});
+  }
+
+  // --- File type ---
+  findings.strength.push({title:'Machine-readable file format', detail:'PDF/DOCX with selectable text parses reliably in most ATS systems.'});
+
+  score = Math.max(0, Math.min(100, Math.round(score)));
+
+  // --- JD keyword match (optional) ---
+  let jdResult = null;
+  if (jdText && jdText.trim().length > 20){
+    const jdWords = jdText.toLowerCase().match(/[a-z][a-z+.#]{2,}/g) || [];
+    const freq = {};
+    jdWords.forEach(w => { if (!STOPWORDS.has(w)) freq[w] = (freq[w]||0)+1; });
+    const topKeywords = Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,20).map(([w])=>w);
+    const resumeLower = lower;
+    const hits = topKeywords.filter(k => resumeLower.includes(k));
+    const misses = topKeywords.filter(k => !resumeLower.includes(k));
+    jdResult = { hits, misses, pct: topKeywords.length ? Math.round((hits.length/topKeywords.length)*100) : 0 };
+  }
+
+  return {
+    score, wordCount, foundSections, missingSections,
+    findings, foundVerbsCount: foundVerbs.size,
+    bulletCount: bulletLines.length, qPct: Math.round(qRatio*100),
+    jdResult, hasEmail: !!emailMatch, hasPhone: !!phoneMatch
+  };
+}
+
+/* ================= UI WIRING ================= */
+const scanLog = document.getElementById('scanLog');
+const report = document.getElementById('report');
+const emptyState = document.getElementById('emptyState');
+
+const SCAN_STEPS = [
+  'Extracting text layer…',
+  'Parsing contact information…',
+  'Scanning section headers…',
+  'Checking verb strength & phrasing…',
+  'Measuring quantified impact…',
+  'Validating date formatting…',
+  'Compiling report…'
+];
+
+function logLine(text, warn){
+  const div = document.createElement('div');
+  div.className = 'scanlog-line' + (warn ? ' warn' : '');
+  div.innerHTML = '<span class="tag">' + (warn ? '!' : '✓') + '</span><span>' + text + '</span>';
+  scanLog.appendChild(div);
+  scanLog.scrollTop = scanLog.scrollHeight;
+}
+
+document.getElementById('analyzeBtn').addEventListener('click', async () => {
+  if (!currentFile) return;
+  const btn = analyzeBtn;
+  btn.disabled = true;
+  btn.classList.add('loading');
+  analyzeLabel.textContent = 'Scanning…';
+  scanLog.innerHTML = '';
+  scanLog.classList.add('active');
+
+  try {
+    const rawText = await extractText(currentFile);
+    if (!rawText || rawText.trim().length < 30){
+      throw new Error('Could not extract readable text — the file may be a scanned image without a text layer.');
+    }
+    const jdText = document.getElementById('jdInput').value;
+    const result = analyze(rawText, jdText);
+
+    for (let i=0;i<SCAN_STEPS.length;i++){
+      await new Promise(r => setTimeout(r, 130));
+      logLine(SCAN_STEPS[i]);
+    }
+    await new Promise(r => setTimeout(r, 150));
+    renderReport(result);
+  } catch (err){
+    logLine(err.message || 'Something went wrong reading this file.', true);
+  } finally {
+    btn.disabled = false;
+    btn.classList.remove('loading');
+    analyzeLabel.textContent = 'Run inspection';
+  }
+});
+
+document.getElementById('resetBtn').addEventListener('click', () => { resetFile(); });
+
+function resetReport(){
+  report.classList.remove('active');
+  emptyState.style.display = 'flex';
+  scanLog.classList.remove('active');
+  scanLog.innerHTML = '';
+}
+
+let lastResult = null;
+
+function renderReport(r){
+  lastResult = r;
+  emptyState.style.display = 'none';
+  report.classList.add('active');
+
+  // score + meter
+  document.getElementById('scoreVal').textContent = r.score;
+  const label = r.score >= 80 ? 'Strong resume' : r.score >= 60 ? 'Needs targeted fixes' : 'Significant gaps found';
+  document.getElementById('scoreLabel').textContent = label;
+
+  const meter = document.getElementById('meter');
+  meter.innerHTML = '';
+  const segments = 20;
+  const filled = Math.round((r.score/100) * segments);
+  for (let i=0;i<segments;i++){
+    const el = document.createElement('i');
+    if (i < filled){
+      el.className = 'fill ' + (r.score>=80?'good':r.score>=60?'mid':'bad');
+    }
+    meter.appendChild(el);
+  }
+
+  // stat strip
+  const statStrip = document.getElementById('statStrip');
+  statStrip.innerHTML = '';
+  const stats = [
+    ['Word count', r.wordCount],
+    ['Action verbs', r.foundVerbsCount],
+    ['Bullets w/ metrics', r.qPct + '%'],
+    ['Sections found', r.foundSections.length + '/5']
+  ];
+  stats.forEach(([lbl, num]) => {
+    const d = document.createElement('div');
+    d.innerHTML = '<div class="num">'+num+'</div><div class="lbl">'+lbl+'</div>';
+    statStrip.appendChild(d);
+  });
+
+  fillList('criticalList','criticalCount', r.findings.critical, 'critical');
+  fillList('suggestionList','suggestionCount', r.findings.suggestion, 'suggestion');
+  fillList('strengthList','strengthCount', r.findings.strength, 'strength');
+
+  const jdSection = document.getElementById('jdSection');
+  if (r.jdResult){
+    jdSection.style.display = 'block';
+    document.getElementById('jdSummary').innerHTML =
+      '<b>' + r.jdResult.pct + '%</b> of the top keywords from the pasted job description also appear in this resume.';
+    const chips = document.getElementById('jdChips');
+    chips.innerHTML = '';
+    r.jdResult.hits.forEach(w => { const c=document.createElement('span'); c.className='chip hit'; c.textContent=w; chips.appendChild(c); });
+    r.jdResult.misses.forEach(w => { const c=document.createElement('span'); c.className='chip miss'; c.textContent=w; chips.appendChild(c); });
+  } else {
+    jdSection.style.display = 'none';
+  }
+
+  report.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function fillList(listId, countId, items, kind){
+  const list = document.getElementById(listId);
+  document.getElementById(countId).textContent = items.length;
+  list.innerHTML = '';
+  if (!items.length){
+    const d = document.createElement('div');
+    d.style.cssText = 'font-size:13px;color:var(--ink-soft);padding:4px 2px;';
+    d.textContent = 'None detected.';
+    list.appendChild(d);
+    return;
+  }
+  items.forEach(item => {
+    const d = document.createElement('div');
+    d.className = 'finding ' + kind;
+    d.innerHTML =
+      '<span class="badge">' + (kind==='critical'?'Fix':kind==='suggestion'?'Improve':'Good') + '</span>' +
+      '<span class="txt"><b>' + item.title + '</b>' + item.detail +
+      (item.snippet ? '<span class="snippet">"' + item.snippet + '"</span>' : '') +
+      '</span>';
+    list.appendChild(d);
+  });
+}
+
+document.getElementById('downloadBtn').addEventListener('click', () => {
+  if (!lastResult) return;
+  const r = lastResult;
+  let out = 'RESUME INTEL — INSPECTION REPORT\n';
+  out += '================================\n\n';
+  out += 'Score: ' + r.score + '/100\n';
+  out += 'Word count: ' + r.wordCount + '\n';
+  out += 'Sections found: ' + r.foundSections.join(', ') + '\n';
+  out += 'Sections missing: ' + (r.missingSections.join(', ') || 'none') + '\n\n';
+
+  ['critical','suggestion','strength'].forEach(kind => {
+    const title = kind==='critical' ? 'CRITICAL ISSUES' : kind==='suggestion' ? 'SUGGESTIONS' : 'STRENGTHS';
+    out += title + '\n' + '-'.repeat(title.length) + '\n';
+    r.findings[kind].forEach(f => {
+      out += '• ' + f.title + ' — ' + f.detail + (f.snippet ? ' [' + f.snippet + ']' : '') + '\n';
+    });
+    out += '\n';
+  });
+
+  if (r.jdResult){
+    out += 'JOB DESCRIPTION KEYWORD MATCH: ' + r.jdResult.pct + '%\n';
+    out += 'Matched: ' + r.jdResult.hits.join(', ') + '\n';
+    out += 'Missing: ' + r.jdResult.misses.join(', ') + '\n\n';
+  }
+
+  out += 'Generated by Resume Intel — a rule-based heuristic tool, not a substitute for human review.\n';
+
+  const blob = new Blob([out], {type:'text/plain'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'resume-inspection-report.txt';
+  a.click();
+  URL.revokeObjectURL(url);
+});
+</script>
+</body>
+</html>
