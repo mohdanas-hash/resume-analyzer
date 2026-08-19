@@ -25,3 +25,4 @@ A rule-based resume inspection tool built with HTML, CSS, and JavaScript.
 * **Phrase Analysis:** Flags weak action verbs and overused cliches.
 * **Keyword Matching:** Paste a target job description to check your keyword overlap percentage.
 * **Dark Mode:** Built-in toggle for comfortable viewing.
+* Deployed by Vercel.
